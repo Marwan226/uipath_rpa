@@ -1,0 +1,14 @@
+﻿{
+  "Name": "Print",
+  "Type": "Element",
+  "TaxonomyType": "Label",
+  "Id": "NfeXLnHNSE-H4NFc3MCrvw",
+  "Reference": "uaKT_PmDjUSH0iiniddvaA/NfeXLnHNSE-H4NFc3MCrvw",
+  "ParentRef": "uaKT_PmDjUSH0iiniddvaA/qMEwBbq2y02QnJ_lP1boQw",
+  "Created": "2026-09-18T21:12:24.8904337Z",
+  "Updated": "2026-09-18T21:12:24.8904337Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.19.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=25.12.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

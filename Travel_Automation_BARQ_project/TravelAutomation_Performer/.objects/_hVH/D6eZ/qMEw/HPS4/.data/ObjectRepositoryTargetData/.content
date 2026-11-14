@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="CgyGM2buuUGiCaVFvZc-bQ" Reference="uaKT_PmDjUSH0iiniddvaA/HPS4PFQ0gUKtMie89mDnUg" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="4a32ed41-8535-4ccc-b846-e17e3b12b673" DesignTimeRectangle="1040, 640, 47, 44" ElementType="Text" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl parentid='cal-grid' tag='DIV' class='*today*' /&gt;" Guid="55d19afc-eb7d-4bdb-8e5e-a43b4b0f1ecc" ScopeSelectorArgument="&lt;html app='msedge.exe' title='Oracle Finance - Procurement Portal' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="None">
+      <TargetAnchorable.PointOffset>
+        <PointOffset X="-4" Y="6" />
+      </TargetAnchorable.PointOffset>
+      <imageRef attrName="InformativeScreenshot" originalValue="b46995313959cb88c4530671cd2941ea.png" xmlns="">0rvXr8oNOukKKXnEeiFYHvg</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

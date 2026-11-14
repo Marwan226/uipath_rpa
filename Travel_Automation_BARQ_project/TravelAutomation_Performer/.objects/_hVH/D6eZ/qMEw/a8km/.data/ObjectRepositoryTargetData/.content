@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="r1ra8-UMuEu7oamkNhoGFQ" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="ba596dd5-aee9-4d06-86ff-143eae42112b" CvElementArea="1495, 485, 68, 28" CvTextArea="1505, 492, 45, 15" CvTextArgument="Approve" CvType="Button" DesignTimeRectangle="1496, 487, 66, 26" ElementType="Button" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl id='po-table' tag='TABLE' /&gt;&lt;webctrl tableRow='3' tag='BUTTON' /&gt;" Guid="41883237-99cf-48ba-b7c5-e1bdaee2c440" ScopeSelectorArgument="&lt;html app='msedge.exe' title='Oracle Finance - Procurement Portal' /&gt;" SearchSteps="Selector, CV" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.Anchors>
+        <scg:List x:TypeArguments="ITarget" Capacity="4">
+          <Target CVScreenId="ba596dd5-aee9-4d06-86ff-143eae42112b" CvElementArea="1365, 511, 68, 27" CvTextArea="1376, 517, 43, 15" CvTextArgument="Pending" CvType="Button" DesignTimeRectangle="1367, 514, 64, 22" ElementType="Text" FuzzySelectorArgument="&lt;webctrl id='po-table' tag='TABLE' matching:id='fuzzy' fuzzylevel:id='0.0' /&gt;&lt;webctrl type='' tag='SPAN' class='pr-badge pr-badge-pending' aaname='Pending' matching:class='fuzzy' fuzzylevel:class='0.0' matching:aaname='fuzzy' fuzzylevel:aaname='0.0' check:innerText='Pending' /&gt;" Guid="d0174b41-7991-4be1-b19d-e7b2a76a497a" SearchSteps="FuzzySelector, CV" />
+        </scg:List>
+      </TargetAnchorable.Anchors>
+      <imageRef attrName="InformativeScreenshot" originalValue="d9edde6a3e26469a3c82eb2e42d5fa33.png" xmlns="">01spNPclf60OZ6Kgt0dkHfw</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

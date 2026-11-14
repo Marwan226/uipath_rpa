@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="8zM3ufxSl0m0IB0AeCGNQw" Reference="uaKT_PmDjUSH0iiniddvaA/NfeXLnHNSE-H4NFc3MCrvw" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="17535a36-94d0-4498-b8c4-ab0a32525fc7" CvElementArea="66, 990, 161, 45" CvTextArea="127, 1005, 38, 17" CvTextArgument="Print" CvType="Button" DesignTimeRectangle="66, 990, 161, 45" ElementType="Text" ElementVisibilityArgument="Interactive" FuzzySelectorArgument="&lt;ctrl name='Purchase Requisition PR-65890164' role='document' matching:name='fuzzy' fuzzylevel:name='0.0' /&gt;&lt;ctrl name='Print' role='push button' matching:name='fuzzy' fuzzylevel:name='0.0' /&gt;&lt;ctrl name='Print' role='text' automationid='' matching:name='fuzzy' fuzzylevel:name='0.0' matching:automationid='fuzzy' fuzzylevel:automationid='0.0' check:text='Print' /&gt;" Guid="8ec9b363-0769-4930-929b-62335f3dc836" ScopeSelectorArgument="&lt;wnd app='msedge.exe' cls='Chrome_WidgetWin_1' title='Purchase Requisition PR-65890164 and 5 more pages - Person 1 - M*' /&gt;" SearchSteps="FuzzySelector, CV" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.Anchors>
+        <scg:List x:TypeArguments="ITarget" Capacity="4">
+          <Target CVScreenId="17535a36-94d0-4498-b8c4-ab0a32525fc7" CvElementArea="66, 990, 161, 45" CvTextArea="127, 1005, 38, 17" CvTextArgument="Print" CvType="Button" DesignTimeRectangle="70, 993, 155, 40" ElementType="Button" FuzzyAccuracy="0.6" FuzzySelectorArgument="&lt;wnd aaname='Purchase Requisition PR-65890164' matching:aaname='fuzzy' fuzzylevel:aaname='0.0' cls='Chrome_RenderWidgetHostHWND' title='Chrome Legacy Window' matching:title='fuzzy' fuzzylevel:title='0.0' /&gt;&lt;ctrl name='Purchase Requisition PR-65890164' matching:name='fuzzy' fuzzylevel:name='0.0' role='document' /&gt;&lt;ctrl name='Print' role='push button' automationid='' matching:automationid='fuzzy' fuzzylevel:automationid='0.0' check:text='Print' /&gt;" Guid="e811e60d-0a3e-4d3b-9016-2a49727543ab" SearchSteps="FuzzySelector, CV" />
+        </scg:List>
+      </TargetAnchorable.Anchors>
+      <imageRef attrName="InformativeScreenshot" originalValue="3538ed33b065c465a929cc67cc3df6bb.png" xmlns="">0t2yxwcxwFUyT42ro0psHpw</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

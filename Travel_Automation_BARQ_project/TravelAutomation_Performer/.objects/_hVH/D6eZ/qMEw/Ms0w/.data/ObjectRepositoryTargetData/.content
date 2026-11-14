@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="_kyktZ2ChUGBzeUl5oSqWw" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" DesignTimeRectangle="190, 48, 1357, 44" ElementType="Toolbar" ElementVisibilityArgument="Interactive" FuzzySelectorArgument="&lt;wnd aaname='Loading' cls='msctls_progress32' matching:aaname='fuzzy' fuzzylevel:aaname='0.0' /&gt;&lt;wnd ctrlid='1001' matching:ctrlid='fuzzy' fuzzylevel:ctrlid='0.0' /&gt;" Guid="ebd6770d-03f0-4b0b-8232-eec67ff893d3" ScopeSelectorArgument="&lt;wnd app='msedge.exe' cls='#32770' title='Save Print Output As' /&gt;" SearchSteps="FuzzySelector" Version="V6" WaitForReadyArgument="Interactive">
+      <imageRef attrName="InformativeScreenshot" originalValue="cdf6d1ae63702933c57a9901aa7f6a23.png" xmlns="">0hIj0durTtUiA4L9it-ziLA</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

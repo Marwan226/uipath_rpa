@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="FlAQZDpqRkyIAhUc8OVt_w" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="90887907-45a9-4157-88cb-f0479071fb82" CvElementArea="1254, 357, 555, 51" CvType="InputBox" DesignTimeRectangle="1256, 359, 553, 48" ElementType="InputBox" ElementVisibilityArgument="Interactive" FuzzySelectorArgument="&lt;webctrl id='proc-date' tag='INPUT' type='text' class='pr-form-input' placeholder='Select date' aaname='PR Date *' matching:id='fuzzy' fuzzylevel:id='0.0' matching:class='fuzzy' fuzzylevel:class='0.0' fuzzylevel:aaname='0.0' /&gt;" Guid="9d22346a-d1cc-4a33-9704-2f1bafd3287a" IsResponsive="True" ScopeSelectorArgument="&lt;html app='msedge.exe' title='Oracle Finance - Procurement Portal' /&gt;" SearchSteps="FuzzySelector, CV" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.Anchors>
+        <scg:List x:TypeArguments="ITarget" Capacity="4">
+          <Target CVScreenId="90887907-45a9-4157-88cb-f0479071fb82" CvTextArea="1254, 335, 67, 15" CvTextArgument="PR Date *" CvType="Text" DesignTimeRectangle="1256, 332, 553, 20" ElementType="Text" FuzzySelectorArgument="&lt;webctrl aaname='PR Date *' parentid='page-procurement' tag='LABEL' type='' class='' fuzzylevel:aaname='0.0' matching:parentid='fuzzy' fuzzylevel:parentid='0.0' matching:class='fuzzy' fuzzylevel:class='0.0' check:innerText='PR Date *' /&gt;" Guid="131a1dc2-0ee0-4703-aeca-92b3899f24f5" SearchSteps="FuzzySelector, CV" />
+        </scg:List>
+      </TargetAnchorable.Anchors>
+      <imageRef attrName="InformativeScreenshot" originalValue="b3b3bda7f2e949121f31dd4f9ef9348d.png" xmlns="">0-JS-n5-2X02Xmmfn7Puvnw</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

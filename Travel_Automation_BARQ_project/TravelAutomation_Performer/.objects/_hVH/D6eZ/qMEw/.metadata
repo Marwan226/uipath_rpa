@@ -1,0 +1,13 @@
+﻿{
+  "Name": "Edge Oracle Finance - Procurement Portal",
+  "Type": "Screen",
+  "Id": "qMEwBbq2y02QnJ_lP1boQw",
+  "Reference": "uaKT_PmDjUSH0iiniddvaA/qMEwBbq2y02QnJ_lP1boQw",
+  "ParentRef": "uaKT_PmDjUSH0iiniddvaA/D6eZeDWAb0uxdfF6cfkrUQ",
+  "Created": "2026-09-16T17:30:28.1990787Z",
+  "Updated": "2026-09-16T17:30:28.1990787Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.19.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=25.12.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

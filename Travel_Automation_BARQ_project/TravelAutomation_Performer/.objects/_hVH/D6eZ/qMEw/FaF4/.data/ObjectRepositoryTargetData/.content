@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="UpTnHGOZVk-eRquTCJGAFg" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="fe22deea-f90d-43b4-b6c6-cd4f7cba6003" CvElementArea="1493, 443, 69, 28" CvTextArea="1504, 451, 46, 13" CvTextArgument="Approve" CvType="Button" DesignTimeRectangle="1495, 444, 66, 26" ElementType="Button" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl id='po-table' tag='TABLE' /&gt;&lt;webctrl tableRow='2' tag='BUTTON' /&gt;" Guid="91f67ce7-d861-45aa-961a-6dbb70e8f44a" ScopeSelectorArgument="&lt;html app='msedge.exe' title='Oracle Finance - Procurement Portal' /&gt;" SearchSteps="Selector, CV" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.PointOffset>
+        <PointOffset X="1" Y="-1" />
+      </TargetAnchorable.PointOffset>
+      <imageRef attrName="InformativeScreenshot" originalValue="7b08c6fe198b5e2aa70b7b009e42d6be.png" xmlns="">09gQmHOfwiEazIiFZ-2Uo9g</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

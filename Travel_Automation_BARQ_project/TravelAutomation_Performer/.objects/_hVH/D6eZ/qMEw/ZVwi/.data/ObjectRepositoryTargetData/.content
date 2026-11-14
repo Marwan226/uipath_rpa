@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="kTspCBdhokSbPDcV54tbjA" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="8fee332b-7fa2-46e1-b2e6-eb924eb807a2" CvElementArea="757, 636, 425, 52" CvType="InputBox" DesignTimeRectangle="757, 636, 425, 52" ElementType="InputBox" ElementVisibilityArgument="Interactive" Guid="b28cc122-8cb7-40d1-940d-6b3d63e927af" IsResponsive="True" ScopeSelectorArgument="&lt;wnd app='msedge.exe' cls='Chrome_WidgetWin_1' title='Oracle Finance - Procurement Portal - Person 1 - Microsoft​ Edge' /&gt;" SearchSteps="CV" TargetType="ComputerVisionBased" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.Anchors>
+        <scg:List x:TypeArguments="ITarget" Capacity="4">
+          <Target CVScreenId="8fee332b-7fa2-46e1-b2e6-eb924eb807a2" CvTextArea="755, 612, 93, 16" CvTextArgument="USERNAME" CvType="Text" DesignTimeRectangle="755, 612, 93, 16" ElementType="Text" Guid="210b597b-162f-4a37-81f5-7295d395c53a" SearchSteps="CV" TargetType="ComputerVisionBased" />
+        </scg:List>
+      </TargetAnchorable.Anchors>
+      <imageRef attrName="InformativeScreenshot" originalValue="60331d47cc1c76ca33cf2e73baf0aeed.png" xmlns="">0MCxa1OjA_EqFgvvU7HCPpg</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">TypeInto</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

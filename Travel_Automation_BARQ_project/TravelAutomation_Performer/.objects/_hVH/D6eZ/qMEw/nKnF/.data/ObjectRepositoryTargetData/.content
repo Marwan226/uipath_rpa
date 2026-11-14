@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="4fzYNlLdQU2vEkckXz1ogA" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="51e4ac9c-2ccf-4e8c-b991-0997325fa5e7" CvElementArea="852, 379, 242, 121" CvType="Button" DesignTimeRectangle="853, 380, 240, 118" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl class='pr-dash-card' idx='2' parentid='page-home' tag='DIV' /&gt;" Guid="58a24137-b770-4361-a790-baa2267c12a0" ScopeSelectorArgument="&lt;html app='msedge.exe' title='Oracle Finance - Procurement Portal' /&gt;" SearchSteps="Selector, CV" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.Anchors>
+        <scg:List x:TypeArguments="ITarget" Capacity="4">
+          <Target CVScreenId="51e4ac9c-2ccf-4e8c-b991-0997325fa5e7" CvElementArea="852, 379, 242, 121" CvTextArea="922, 445, 100, 15" CvTextArgument="Purchase Orders" CvType="Button" DesignTimeRectangle="873, 443, 200, 17" ElementType="Text" FuzzySelectorArgument="&lt;webctrl aaname='Purchase Orders' class='pr-dash-label' parentid='page-home' tag='DIV' type='' matching:aaname='fuzzy' fuzzylevel:aaname='0.0' matching:class='fuzzy' fuzzylevel:class='0.0' matching:parentid='fuzzy' fuzzylevel:parentid='0.0' check:innerText='Purchase Orders' /&gt;" Guid="3f745cf1-1934-4b4f-aa34-fdab5271abb2" SearchSteps="FuzzySelector, CV" />
+        </scg:List>
+      </TargetAnchorable.Anchors>
+      <imageRef attrName="InformativeScreenshot" originalValue="83b23c1851eaacac143daf727df26396.png" xmlns="">0WOiPqWhqlUSPcWftDKBwSw</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

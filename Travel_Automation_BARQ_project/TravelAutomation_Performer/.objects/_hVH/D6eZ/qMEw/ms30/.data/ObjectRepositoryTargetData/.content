@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="jyA1aKS_Ak6e74vcGRR3zQ" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="" CVScreenId="8fee332b-7fa2-46e1-b2e6-eb924eb807a2" CvElementArea="755, 808, 427, 56" CvTextArea="929, 825, 77, 20" CvTextArgument="SIGN IN" CvType="Button" DesignTimeRectangle="755, 808, 427, 56" ElementType="Button" ElementVisibilityArgument="Interactive" Guid="7456f1da-4e0f-4dc0-9614-633d89a7300e" ScopeSelectorArgument="&lt;wnd app='msedge.exe' cls='Chrome_WidgetWin_1' title='Oracle Finance - Procurement Portal - Person 1 - Microsoft​ Edge' /&gt;" SearchSteps="CV" TargetType="ComputerVisionBased" Version="V6" WaitForReadyArgument="Interactive">
+      <imageRef attrName="InformativeScreenshot" originalValue="4942a2cfc5d80c0dcc2bc9363c80445e.png" xmlns="">0QXirjC0R40O4SO13GiChhA</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">Click</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>

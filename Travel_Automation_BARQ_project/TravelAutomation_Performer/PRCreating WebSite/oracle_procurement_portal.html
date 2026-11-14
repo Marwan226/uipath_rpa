@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oracle Finance - Procurement Portal</title>
+<style>
+  :root {
+    --oracle-primary: #1a1a2e;
+    --oracle-secondary: #16213e;
+    --oracle-accent: #0f3460;
+    --oracle-gold: #c9a227;
+    --oracle-text: #e8e8e8;
+    --oracle-muted: #a0a0a0;
+    --oracle-border: #2a2a4a;
+    --oracle-card: #1e1e3f;
+    --oracle-success: #2e8b57;
+    --oracle-danger: #c0392b;
+    --oracle-input-bg: #252545;
+    --oracle-hover: #2a2a55;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); background: #0d0d1a; color: var(--oracle-text); min-height: 100vh; }
+  .pr-app { min-height: 100vh; display: flex; flex-direction: column; }
+  .pr-header {
+    background: linear-gradient(135deg, var(--oracle-secondary) 0%, var(--oracle-accent) 100%);
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 2px solid var(--oracle-gold);
+  }
+  .pr-header-left { display: flex; align-items: center; gap: 12px; }
+  .pr-logo { font-size: 20px; font-weight: 600; color: var(--oracle-gold); letter-spacing: 1px; }
+  .pr-subtitle { font-size: 12px; color: var(--oracle-muted); margin-left: 8px; }
+  .pr-header-right { display: flex; align-items: center; gap: 16px; }
+  .pr-user-menu { position: relative; }
+  .pr-user-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--oracle-card); border: 1px solid var(--oracle-border);
+    color: var(--oracle-text); padding: 6px 14px; border-radius: 8px;
+    cursor: pointer; font-size: 14px; transition: all 0.2s;
+  }
+  .pr-user-btn:hover { background: var(--oracle-hover); }
+  .pr-dropdown {
+    position: absolute; right: 0; top: 44px;
+    background: var(--oracle-card); border: 1px solid var(--oracle-border);
+    border-radius: 8px; min-width: 160px; z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    opacity: 0; visibility: hidden; transform: translateY(-4px); transition: all 0.2s;
+  }
+  .pr-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+  .pr-dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; font-size: 14px; cursor: pointer;
+    color: var(--oracle-text); transition: background 0.15s;
+  }
+  .pr-dropdown-item:hover { background: var(--oracle-hover); }
+  .pr-dropdown-item:first-child { border-radius: 8px 8px 0 0; }
+  .pr-dropdown-item:last-child { border-radius: 0 0 8px 8px; }
+  .pr-dropdown-divider { height: 1px; background: var(--oracle-border); margin: 4px 0; }
+  .pr-page { display: none; flex: 1; padding: 24px; }
+  .pr-page.active { display: block; }
+  .pr-login-wrap { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 60px); }
+  .pr-login-card {
+    background: var(--oracle-card); border: 1px solid var(--oracle-border);
+    border-radius: 12px; padding: 40px; width: 100%; max-width: 420px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .pr-login-title { text-align: center; font-size: 22px; font-weight: 600; color: var(--oracle-gold); margin-bottom: 8px; }
+  .pr-login-subtitle { text-align: center; font-size: 13px; color: var(--oracle-muted); margin-bottom: 28px; }
+  .pr-field { margin-bottom: 18px; }
+  .pr-field label { display: block; font-size: 13px; font-weight: 500; color: var(--oracle-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pr-input-wrap { position: relative; }
+  .pr-input {
+    width: 100%; padding: 10px 12px 10px 38px;
+    background: var(--oracle-input-bg); border: 1px solid var(--oracle-border);
+    border-radius: 8px; color: var(--oracle-text); font-size: 15px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .pr-input:focus { border-color: var(--oracle-gold); }
+  .pr-input-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--oracle-muted); pointer-events: none; }
+  .pr-btn {
+    width: 100%; padding: 12px; border: none; border-radius: 8px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    background: var(--oracle-gold); color: var(--oracle-primary);
+    transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .pr-btn:hover { filter: brightness(1.15); }
+  .pr-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pr-error { color: var(--oracle-danger); font-size: 13px; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+  .pr-error.hidden { display: none; }
+  .pr-home-grid { display: grid; grid-template-columns: 260px 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }
+  .pr-sidebar { background: var(--oracle-card); border: 1px solid var(--oracle-border); border-radius: 10px; padding: 16px; height: fit-content; }
+  .pr-sidebar-title { font-size: 12px; font-weight: 600; color: var(--oracle-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .pr-menu-group { margin-bottom: 16px; }
+  .pr-menu-header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px; font-weight: 600; color: var(--oracle-gold); cursor: pointer; border-radius: 6px; transition: background 0.15s; }
+  .pr-menu-header:hover { background: var(--oracle-hover); }
+  .pr-menu-items { margin-left: 8px; border-left: 2px solid var(--oracle-border); padding-left: 12px; }
+  .pr-menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-size: 13px; color: var(--oracle-text); cursor: pointer; border-radius: 6px; transition: all 0.15s; margin: 2px 0; }
+  .pr-menu-item:hover { background: var(--oracle-hover); color: var(--oracle-gold); }
+  .pr-menu-item.active { background: var(--oracle-accent); color: var(--oracle-gold); border-left: 3px solid var(--oracle-gold); }
+  .pr-content-area { background: var(--oracle-card); border: 1px solid var(--oracle-border); border-radius: 10px; padding: 24px; }
+  .pr-welcome { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .pr-welcome-sub { font-size: 14px; color: var(--oracle-muted); margin-bottom: 24px; }
+  .pr-dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .pr-dash-card { background: var(--oracle-primary); border: 1px solid var(--oracle-border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .pr-dash-card:hover { border-color: var(--oracle-gold); transform: translateY(-2px); }
+  .pr-dash-icon { margin-bottom: 10px; color: var(--oracle-gold); }
+  .pr-dash-label { font-size: 14px; font-weight: 600; }
+  .pr-dash-desc { font-size: 12px; color: var(--oracle-muted); margin-top: 4px; }
+  .pr-proc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; max-width: 1400px; margin: 0 auto 20px; }
+  .pr-proc-title { font-size: 18px; font-weight: 600; color: var(--oracle-gold); }
+  .pr-breadcrumb { font-size: 12px; color: var(--oracle-muted); }
+  .pr-section { background: var(--oracle-primary); border: 1px solid var(--oracle-border); border-radius: 10px; padding: 20px; margin-bottom: 20px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+  .pr-section-title { font-size: 14px; font-weight: 600; color: var(--oracle-gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pr-form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .pr-form-field label { display: block; font-size: 12px; color: var(--oracle-muted); margin-bottom: 6px; font-weight: 600; }
+  .pr-form-input { width: 100%; padding: 10px 12px; background: var(--oracle-input-bg); border: 1px solid var(--oracle-border); border-radius: 8px; color: var(--oracle-text); font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .pr-form-input:focus { border-color: var(--oracle-gold); }
+  .pr-form-input[readonly] { cursor: pointer; background: var(--oracle-secondary); }
+  .pr-date-wrap { position: relative; }
+  .pr-date-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--oracle-gold); cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.15s; }
+  .pr-date-btn:hover { background: var(--oracle-hover); }
+  .pr-calendar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .pr-calendar-overlay.active { display: flex; }
+  .pr-calendar { background: var(--oracle-card); border: 1px solid var(--oracle-border); border-radius: 12px; padding: 16px; width: 320px; box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
+  .pr-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .pr-cal-month-year { font-size: 15px; font-weight: 600; color: var(--oracle-gold); }
+  .pr-cal-nav { background: none; border: none; color: var(--oracle-text); cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.15s; }
+  .pr-cal-nav:hover { background: var(--oracle-hover); }
+  .pr-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .pr-cal-day-label { text-align: center; font-size: 11px; color: var(--oracle-muted); padding: 6px 0; font-weight: 600; }
+  .pr-cal-day { text-align: center; padding: 8px 0; font-size: 13px; cursor: pointer; border-radius: 6px; transition: all 0.15s; color: var(--oracle-text); }
+  .pr-cal-day:hover { background: var(--oracle-hover); }
+  .pr-cal-day.other-month { color: var(--oracle-muted); opacity: 0.5; }
+  .pr-cal-day.selected { background: var(--oracle-gold); color: var(--oracle-primary); font-weight: 600; }
+  .pr-cal-day.today { border: 1px solid var(--oracle-gold); }
+  .pr-items-toolbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pr-btn-secondary { padding: 10px 18px; border: 1px solid var(--oracle-border); background: var(--oracle-accent); color: var(--oracle-text); border-radius: 8px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+  .pr-btn-secondary:hover { border-color: var(--oracle-gold); }
+  .pr-btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pr-btn-primary { padding: 10px 18px; border: none; background: var(--oracle-gold); color: var(--oracle-primary); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+  .pr-btn-primary:hover { filter: brightness(1.15); }
+  .pr-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pr-btn-danger { padding: 6px 10px; border: none; background: transparent; color: var(--oracle-danger); border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: background 0.15s; opacity: 0; }
+  .pr-table-row:hover .pr-btn-danger { opacity: 1; }
+  .pr-btn-danger:hover { background: rgba(192,57,43,0.15); }
+  .pr-table { width: 100%; border-collapse: collapse; }
+  .pr-table th { text-align: left; padding: 10px 12px; font-size: 12px; color: var(--oracle-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--oracle-border); font-weight: 600; }
+  .pr-table td { padding: 10px 12px; font-size: 14px; border-bottom: 1px solid var(--oracle-border); }
+  .pr-table-row { transition: background 0.15s; }
+  .pr-table-row:hover { background: var(--oracle-hover); }
+  .pr-empty-state { text-align: center; padding: 40px; color: var(--oracle-muted); font-size: 14px; }
+  .pr-totals-bar { display: flex; justify-content: flex-end; gap: 24px; padding: 16px; background: var(--oracle-secondary); border-radius: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .pr-total-item { text-align: right; }
+  .pr-total-label { font-size: 12px; color: var(--oracle-muted); }
+  .pr-total-value { font-size: 16px; font-weight: 600; color: var(--oracle-gold); }
+  .pr-popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; display: none; align-items: center; justify-content: center; }
+  .pr-popup-overlay.active { display: flex; }
+  .pr-popup { background: var(--oracle-card); border: 1px solid var(--oracle-border); border-radius: 12px; width: 90%; max-width: 800px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .pr-popup-header { padding: 20px 24px; border-bottom: 1px solid var(--oracle-border); display: flex; align-items: center; justify-content: space-between; }
+  .pr-popup-title { font-size: 18px; font-weight: 600; color: var(--oracle-gold); }
+  .pr-popup-close { background: none; border: none; color: var(--oracle-muted); cursor: pointer; padding: 4px; border-radius: 4px; }
+  .pr-popup-close:hover { color: var(--oracle-text); background: var(--oracle-hover); }
+  .pr-popup-body { padding: 24px; overflow-y: auto; flex: 1; }
+  .pr-popup-footer { padding: 16px 24px; border-top: 1px solid var(--oracle-border); display: flex; justify-content: flex-end; gap: 12px; }
+  .pr-success-icon { width: 56px; height: 56px; background: var(--oracle-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; }
+  .pr-success-text { text-align: center; font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+  .pr-preview-box { background: white; color: #1a1a2e; padding: 24px; border-radius: 8px; font-family: 'Segoe UI', Arial, sans-serif; }
+  .pr-preview-header { text-align: center; border-bottom: 2px solid #1a1a2e; padding-bottom: 12px; margin-bottom: 16px; }
+  .pr-preview-title { font-size: 20px; font-weight: bold; color: #1a1a2e; }
+  .pr-preview-meta { display: flex; justify-content: space-between; margin: 12px 0; font-size: 13px; flex-wrap: wrap; gap: 8px; }
+  .pr-preview-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .pr-preview-table th, .pr-preview-table td { border: 1px solid #ccc; padding: 8px; font-size: 13px; }
+  .pr-preview-table th { background: #f0f0f0; font-weight: 600; }
+  .pr-preview-total { text-align: right; font-weight: bold; margin-top: 12px; }
+  .pr-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--oracle-accent); color: var(--oracle-gold); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .pr-badge-pending { background: var(--oracle-accent); color: var(--oracle-gold); }
+  .pr-badge-approved { background: rgba(46,139,87,0.2); color: var(--oracle-success); }
+  .pr-badge-rejected { background: rgba(192,57,43,0.2); color: var(--oracle-danger); }
+  .pr-po-action-btn { padding: 6px 12px; font-size: 12px; }
+  .pr-po-action-reject { color: var(--oracle-danger); border-color: var(--oracle-danger); }
+  .hidden { display: none !important; }
+  @media (max-width: 768px) {
+    .pr-home-grid { grid-template-columns: 1fr; }
+    .pr-form-row { grid-template-columns: 1fr; }
+    .pr-header { flex-wrap: wrap; gap: 8px; }
+    .pr-proc-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="pr-app" id="pr-app">
+  <div class="pr-header" id="pr-header" data-testid="app-header" style="display:none;">
+    <div class="pr-header-left">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="color:var(--oracle-gold);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      <span class="pr-logo">Oracle Finance</span>
+      <span class="pr-subtitle">Procurement Portal</span>
+    </div>
+    <div class="pr-header-right">
+      <div class="pr-user-menu">
+        <button class="pr-user-btn" id="user-menu-btn" data-testid="user-menu-button" onclick="toggleUserMenu()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+          <span id="header-username">academy_user</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="pr-dropdown" id="user-dropdown" data-testid="user-dropdown">
+          <div class="pr-dropdown-item" data-testid="user-menu-profile" onclick="showProfile()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+            My Profile
+          </div>
+          <div class="pr-dropdown-divider"></div>
+          <div class="pr-dropdown-item" data-testid="user-menu-signout" onclick="signOut()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Sign Out
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr-page active" id="page-login" data-testid="page-login">
+    <div class="pr-login-wrap">
+      <div class="pr-login-card">
+        <div style="text-align:center;margin-bottom:20px;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="color:var(--oracle-gold);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </div>
+        <div class="pr-login-title">Sign In</div>
+        <div class="pr-login-subtitle">Oracle Finance Procurement Portal</div>
+        <div class="pr-field">
+          <label for="login-username">Username</label>
+          <div class="pr-input-wrap">
+            <span class="pr-input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></span>
+            <input type="text" class="pr-input" id="login-username" data-testid="login-input-username" placeholder="Enter username" autocomplete="off">
+          </div>
+        </div>
+        <div class="pr-field">
+          <label for="login-password">Password</label>
+          <div class="pr-input-wrap">
+            <span class="pr-input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></span>
+            <input type="password" class="pr-input" id="login-password" data-testid="login-input-password" placeholder="Enter password">
+          </div>
+        </div>
+        <div class="pr-error hidden" id="login-error" data-testid="login-error-message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+          <span id="login-error-text">Invalid credentials</span>
+        </div>
+        <button class="pr-btn" id="login-button" data-testid="login-button-submit" onclick="handleLogin()">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr-page" id="page-home" data-testid="page-home">
+    <div class="pr-home-grid">
+      <div class="pr-sidebar">
+        <div class="pr-sidebar-title">Navigation</div>
+        <div class="pr-menu-group">
+          <div class="pr-menu-header" data-testid="menu-procurement" onclick="toggleMenu('proc-menu')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Procurement
+          </div>
+          <div class="pr-menu-items" id="proc-menu">
+            <div class="pr-menu-item active" data-testid="home-menu-item-check-procurement" onclick="goToProcurement()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              Check Procurement
+            </div>
+            <div class="pr-menu-item" data-testid="home-menu-item-purchase-orders" onclick="goToPurchaseOrders()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              Purchase Orders
+            </div>
+            <div class="pr-menu-item" data-testid="home-menu-item-invoices" onclick="goToInvoices()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              Invoices
+            </div>
+          </div>
+        </div>
+        <div class="pr-menu-group">
+          <div class="pr-menu-header" data-testid="menu-reports" onclick="toggleMenu('reports-menu')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Reports
+          </div>
+          <div class="pr-menu-items" id="reports-menu" style="display:none;">
+            <div class="pr-menu-item" data-testid="home-menu-item-spend-analysis">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              Spend Analysis
+            </div>
+            <div class="pr-menu-item" data-testid="home-menu-item-supplier-report">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+              Supplier Report
+            </div>
+          </div>
+        </div>
+        <div class="pr-menu-group">
+          <div class="pr-menu-header" data-testid="menu-admin" onclick="toggleMenu('admin-menu')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+            Administration
+          </div>
+          <div class="pr-menu-items" id="admin-menu" style="display:none;">
+            <div class="pr-menu-item" data-testid="home-menu-item-users">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+              User Management
+            </div>
+            <div class="pr-menu-item" data-testid="home-menu-item-roles">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              Roles & Access
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pr-content-area">
+        <div class="pr-welcome">Welcome, <span id="welcome-name">academy_user</span></div>
+        <div class="pr-welcome-sub">Oracle Finance Cloud &mdash; Procurement Module</div>
+        <div class="pr-dash-grid">
+          <div class="pr-dash-card" data-testid="dash-card-procurement" onclick="goToProcurement()">
+            <div class="pr-dash-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <div class="pr-dash-label">Check Procurement</div>
+            <div class="pr-dash-desc">Create and manage PR documents</div>
+          </div>
+          <div class="pr-dash-card" data-testid="dash-card-po" onclick="goToPurchaseOrders()">
+            <div class="pr-dash-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <div class="pr-dash-label">Purchase Orders</div>
+            <div class="pr-dash-desc">View and track PO status</div>
+          </div>
+          <div class="pr-dash-card" data-testid="dash-card-invoices" onclick="goToInvoices()">
+            <div class="pr-dash-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <div class="pr-dash-label">Invoices</div>
+            <div class="pr-dash-desc">Process vendor invoices</div>
+          </div>
+          <div class="pr-dash-card" data-testid="dash-card-reports">
+            <div class="pr-dash-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <div class="pr-dash-label">Reports</div>
+            <div class="pr-dash-desc">Analytics and dashboards</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pr-page" id="page-procurement" data-testid="page-procurement">
+    <div class="pr-proc-header">
+      <div>
+        <div class="pr-proc-title">Check Procurement</div>
+        <div class="pr-breadcrumb">Home / Procurement / Check Procurement</div>
+      </div>
+      <button class="pr-btn-secondary" data-testid="proc-button-back" onclick="goToHome()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Back to Home
+      </button>
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Company Details
+      </div>
+      <div class="pr-form-row">
+        <div class="pr-form-field">
+          <label for="proc-company-name">Company Name *</label>
+          <input type="text" class="pr-form-input" id="proc-company-name" data-testid="proc-input-company-name" placeholder="Enter company name">
+          <div class="pr-error hidden" id="error-company-name" data-testid="proc-error-company-name">Company name is required</div>
+        </div>
+        <div class="pr-form-field">
+          <label for="proc-company-code">Company Code *</label>
+          <input type="text" class="pr-form-input" id="proc-company-code" data-testid="proc-input-company-code" placeholder="Enter company code">
+          <div class="pr-error hidden" id="error-company-code" data-testid="proc-error-company-code">Company code is required</div>
+        </div>
+        <div class="pr-form-field">
+          <label for="proc-date">PR Date *</label>
+          <div class="pr-date-wrap">
+            <input type="text" class="pr-form-input" id="proc-date" data-testid="proc-input-date" placeholder="Select date" readonly onfocus="openCalendar()">
+            <button class="pr-date-btn" data-testid="date-picker-button" onclick="openCalendar()" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="1.8" fill="none"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+            </button>
+          </div>
+          <div class="pr-error hidden" id="error-date" data-testid="proc-error-date">Date is required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Invoice Items
+        <span class="pr-badge" id="items-badge" data-testid="items-badge-count" style="margin-left:auto;">0 items</span>
+      </div>
+      <div class="pr-form-row">
+        <div class="pr-form-field">
+          <label for="items-charge-code">Charge Code *</label>
+          <input type="text" class="pr-form-input" id="items-charge-code" data-testid="items-input-charge-code" placeholder="e.g. CC-1001">
+        </div>
+        <div class="pr-form-field">
+          <label for="items-amount">Amount (Excl. VAT) *</label>
+          <input type="number" class="pr-form-input" id="items-amount" data-testid="items-input-amount" placeholder="0.00" step="0.01" min="0">
+        </div>
+        <div class="pr-form-field" style="display:flex;align-items:flex-end;">
+          <button class="pr-btn-secondary" id="items-add-btn" data-testid="items-button-add-new" onclick="addItem()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            Add & New
+          </button>
+        </div>
+      </div>
+      <div id="items-table-container" data-testid="items-table-container">
+        <div class="pr-empty-state" id="items-empty" data-testid="items-empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin-bottom:8px;color:var(--oracle-muted);"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <div>No items added yet. Enter charge code and amount above.</div>
+        </div>
+        <table class="pr-table hidden" id="items-table" data-testid="items-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Charge Code</th>
+              <th>Amount (Excl. VAT)</th>
+              <th>VAT (15%)</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="items-tbody" data-testid="items-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pr-totals-bar" id="totals-bar" style="display:none;" data-testid="items-totals-bar">
+        <div class="pr-total-item">
+          <div class="pr-total-label">Subtotal (Excl. VAT)</div>
+          <div class="pr-total-value" id="total-subtotal" data-testid="items-display-subtotal">0.00</div>
+        </div>
+        <div class="pr-total-item">
+          <div class="pr-total-label">VAT (15%)</div>
+          <div class="pr-total-value" id="total-vat" data-testid="items-display-vat">0.00</div>
+        </div>
+        <div class="pr-total-item">
+          <div class="pr-total-label">Grand Total</div>
+          <div class="pr-total-value" id="total-grand" data-testid="items-display-total">0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Attachments
+        <span class="pr-badge" id="attachments-badge" data-testid="attachments-badge-count" style="margin-left:auto;">0 files</span>
+      </div>
+      <div class="pr-items-toolbar">
+        <label class="pr-btn-secondary" for="attachment-input" style="cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          Upload Attachment
+        </label>
+        <input type="file" id="attachment-input" data-testid="attachment-input-file" multiple style="display:none;" onchange="handleAttachmentUpload(event)">
+      </div>
+      <div id="attachments-list-container" data-testid="attachments-list-container">
+        <div class="pr-empty-state" id="attachments-empty" data-testid="attachments-empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin-bottom:8px;color:var(--oracle-muted);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <div>No attachments uploaded yet. At least one attachment is required to submit.</div>
+        </div>
+        <table class="pr-table hidden" id="attachments-table" data-testid="attachments-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>File Name</th>
+              <th>Size</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="attachments-tbody" data-testid="attachments-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pr-error hidden" id="error-attachments" data-testid="proc-error-attachments" style="margin-top:12px;">At least one attachment is required before you can submit the PR</div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+        <button class="pr-btn-secondary" data-testid="items-button-reset" onclick="resetItems()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M3 3v5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          Reset
+        </button>
+        <button class="pr-btn-primary" id="items-submit-btn" data-testid="items-button-submit" onclick="submitPR()" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          Submit PR
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr-page" id="page-purchase-orders" data-testid="page-purchase-orders">
+    <div class="pr-proc-header">
+      <div>
+        <div class="pr-proc-title">Purchase Orders</div>
+        <div class="pr-breadcrumb">Home / Procurement / Purchase Orders</div>
+      </div>
+      <button class="pr-btn-secondary" data-testid="po-button-back" onclick="goToHome()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Back to Home
+      </button>
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        My Submitted PRs
+        <span class="pr-badge" id="po-badge" data-testid="po-badge-count" style="margin-left:auto;">0 PRs</span>
+      </div>
+      <div id="po-list-container" data-testid="po-list-container">
+        <div class="pr-empty-state" id="po-empty" data-testid="po-empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin-bottom:8px;color:var(--oracle-muted);"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <div>You haven't submitted any Purchase Requisitions yet.</div>
+        </div>
+        <table class="pr-table hidden" id="po-table" data-testid="po-table">
+          <thead>
+            <tr>
+              <th>PR Number</th>
+              <th>Date</th>
+              <th>Company</th>
+              <th>Items</th>
+              <th>Subtotal (Excl. VAT)</th>
+              <th>Grand Total</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="po-tbody" data-testid="po-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr-page" id="page-invoices" data-testid="page-invoices">
+    <div class="pr-proc-header">
+      <div>
+        <div class="pr-proc-title">Invoices</div>
+        <div class="pr-breadcrumb">Home / Procurement / Invoices</div>
+      </div>
+      <button class="pr-btn-secondary" data-testid="inv-button-back" onclick="goToHome()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Back to Home
+      </button>
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        PR Attachments
+        <span class="pr-badge" id="inv-badge" data-testid="inv-badge-count" style="margin-left:auto;">0 files</span>
+      </div>
+      <div id="inv-list-container" data-testid="inv-list-container">
+        <div class="pr-empty-state" id="inv-empty" data-testid="inv-empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin-bottom:8px;color:var(--oracle-muted);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <div>No attachments found. Files uploaded when creating a PR will appear here.</div>
+        </div>
+        <table class="pr-table hidden" id="inv-table" data-testid="inv-table">
+          <thead>
+            <tr>
+              <th>PR Number</th>
+              <th>Company</th>
+              <th>Date</th>
+              <th>File Name</th>
+              <th>Size</th>
+              <th>PR Status</th>
+            </tr>
+          </thead>
+          <tbody id="inv-tbody" data-testid="inv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr-calendar-overlay" id="calendar-overlay" data-testid="calendar-overlay" onclick="if(event.target===this)closeCalendar()">
+    <div class="pr-calendar" data-testid="calendar-popup">
+      <div class="pr-cal-header">
+        <button class="pr-cal-nav" data-testid="calendar-prev-month" onclick="changeMonth(-1)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+        <div class="pr-cal-month-year" id="cal-month-year" data-testid="calendar-month-year"></div>
+        <button class="pr-cal-nav" data-testid="calendar-next-month" onclick="changeMonth(1)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+      </div>
+      <div class="pr-cal-grid" id="cal-grid" data-testid="calendar-grid"></div>
+    </div>
+  </div>
+
+  <div class="pr-popup-overlay" id="popup-overlay" data-testid="popup-success-overlay">
+    <div class="pr-popup">
+      <div class="pr-popup-header">
+        <div class="pr-popup-title">PR Created Successfully<span id="popup-pr-number" style="color:var(--oracle-muted);font-weight:500;"></span></div>
+        <button class="pr-popup-close" data-testid="popup-button-close" onclick="closePopup()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+      </div>
+      <div class="pr-popup-body">
+        <div class="pr-success-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </div>
+        <div class="pr-success-text">Purchase Requisition has been created successfully!</div>
+        <div class="pr-preview-box" id="pr-preview-content"></div>
+      </div>
+      <div class="pr-popup-footer">
+        <button class="pr-btn-secondary" data-testid="popup-button-close-secondary" onclick="closePopup()">Close</button>
+        <button class="pr-btn-primary" data-testid="popup-button-download" onclick="downloadPDF()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          Download PR (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="credentials.js"></script>
+<script>
+  let currentUser = null, currentUserDisplayName = null, items = [], attachments = [], selectedDate = null, calDate = new Date();
+  let companyName = '', companyCode = '', prNumber = '';
+  let submittedPRs = [];
+  const VAT_RATE = 0.15;
+  const PR_STORAGE_KEY = 'oracle_procurement_submitted_prs';
+
+  function savePRsToStorage() {
+    try { localStorage.setItem(PR_STORAGE_KEY, JSON.stringify(submittedPRs)); }
+    catch (e) { console.warn('Could not save PRs to local storage:', e); }
+  }
+  function loadPRsFromStorage() {
+    try {
+      const raw = localStorage.getItem(PR_STORAGE_KEY);
+      submittedPRs = raw ? JSON.parse(raw) : [];
+    } catch (e) { console.warn('Could not load PRs from local storage:', e); submittedPRs = []; }
+  }
+  loadPRsFromStorage();
+
+  function showPage(id) {
+    document.querySelectorAll('.pr-page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById('pr-header').style.display = (id === 'page-login') ? 'none' : 'flex';
+    window.scrollTo(0,0);
+  }
+  function toggleUserMenu() { document.getElementById('user-dropdown').classList.toggle('active'); }
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('user-dropdown'), btn = document.getElementById('user-menu-btn');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('active');
+  });
+  function showProfile() {
+    alert('Profile: ' + (currentUser || 'academy_user') + '\nRole: Procurement Officer\nDepartment: Finance');
+    document.getElementById('user-dropdown').classList.remove('active');
+  }
+  function signOut() {
+    currentUser = null; currentUserDisplayName = null; items = []; attachments = []; selectedDate = null; companyName = ''; companyCode = ''; prNumber = '';
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+    document.getElementById('proc-company-name').value = '';
+    document.getElementById('proc-company-code').value = '';
+    document.getElementById('proc-date').value = '';
+    resetItems();
+    renderAttachments();
+    document.getElementById('user-dropdown').classList.remove('active');
+    showPage('page-login');
+  }
+  function handleLogin() {
+    const u = document.getElementById('login-username').value.trim();
+    const p = document.getElementById('login-password').value;
+    const err = document.getElementById('login-error');
+    const errText = document.getElementById('login-error-text');
+    const userList = (typeof USERS !== 'undefined' && Array.isArray(USERS)) ? USERS : [];
+    const match = userList.find(acc => acc.username === u && acc.password === p);
+    if (match) {
+      currentUser = match.username;
+      currentUserDisplayName = match.displayName || match.username;
+      document.getElementById('welcome-name').textContent = currentUserDisplayName;
+      document.getElementById('header-username').textContent = currentUserDisplayName;
+      err.classList.add('hidden');
+      showPage('page-home');
+    } else {
+      errText.textContent = 'Invalid username or password. Please try again.';
+      err.classList.remove('hidden');
+    }
+  }
+  document.getElementById('login-username').addEventListener('keypress', function(e) { if (e.key === 'Enter') document.getElementById('login-password').focus(); });
+  document.getElementById('login-password').addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+  function toggleMenu(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
+  function setActiveMenuItem(testid) {
+    document.querySelectorAll('.pr-menu-item').forEach(el => el.classList.remove('active'));
+    const el = document.querySelector('[data-testid="' + testid + '"]');
+    if (el) el.classList.add('active');
+  }
+  function goToHome() { showPage('page-home'); }
+  function goToProcurement() { showPage('page-procurement'); setActiveMenuItem('home-menu-item-check-procurement'); }
+  function goToPurchaseOrders() { showPage('page-purchase-orders'); setActiveMenuItem('home-menu-item-purchase-orders'); renderPurchaseOrders(); }
+  function goToInvoices() { showPage('page-invoices'); setActiveMenuItem('home-menu-item-invoices'); renderInvoices(); }
+
+  function openCalendar() { document.getElementById('calendar-overlay').classList.add('active'); renderCalendar(); }
+  function closeCalendar() { document.getElementById('calendar-overlay').classList.remove('active'); }
+  function changeMonth(delta) { calDate.setMonth(calDate.getMonth() + delta); renderCalendar(); }
+  function renderCalendar() {
+    const year = calDate.getFullYear(), month = calDate.getMonth();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('cal-month-year').textContent = monthNames[month] + ' ' + year;
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    let html = '';
+    const dayLabels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    dayLabels.forEach(d => html += '<div class="pr-cal-day-label">' + d + '</div>');
+    for (let i = firstDay - 1; i >= 0; i--) html += '<div class="pr-cal-day other-month">' + (daysInPrevMonth - i) + '</div>';
+    const today = new Date();
+    for (let d = 1; d <= daysInMonth; d++) {
+      let cls = 'pr-cal-day';
+      if (selectedDate && selectedDate.getDate() === d && selectedDate.getMonth() === month && selectedDate.getFullYear() === year) cls += ' selected';
+      if (today.getDate() === d && today.getMonth() === month && today.getFullYear() === year) cls += ' today';
+      html += '<div class="' + cls + '" data-testid="calendar-day-' + d + '" onclick="selectDate(' + year + ',' + month + ',' + d + ')">' + d + '</div>';
+    }
+    const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+    const remaining = totalCells - (firstDay + daysInMonth);
+    for (let d = 1; d <= remaining; d++) html += '<div class="pr-cal-day other-month">' + d + '</div>';
+    document.getElementById('cal-grid').innerHTML = html;
+  }
+  function selectDate(year, month, day) {
+    selectedDate = new Date(year, month, day);
+    const dd = String(day).padStart(2, '0'), mm = String(month + 1).padStart(2, '0');
+    document.getElementById('proc-date').value = dd + '/' + mm + '/' + year;
+    closeCalendar();
+    validateCompanyForm();
+  }
+
+  function validateCompanyForm() {
+    const name = document.getElementById('proc-company-name').value.trim();
+    const code = document.getElementById('proc-company-code').value.trim();
+    const date = document.getElementById('proc-date').value.trim();
+    document.getElementById('error-company-name').classList.toggle('hidden', !!name);
+    document.getElementById('error-company-code').classList.toggle('hidden', !!code);
+    document.getElementById('error-date').classList.toggle('hidden', !!date);
+  }
+  ['proc-company-name','proc-company-code','proc-date'].forEach(id => {
+    document.getElementById(id).addEventListener('input', validateCompanyForm);
+    document.getElementById(id).addEventListener('change', validateCompanyForm);
+  });
+
+  function addItem() {
+    const name = document.getElementById('proc-company-name').value.trim();
+    const code = document.getElementById('proc-company-code').value.trim();
+    const date = document.getElementById('proc-date').value.trim();
+    let hasError = false;
+    if (!name) { document.getElementById('error-company-name').classList.remove('hidden'); hasError = true; }
+    if (!code) { document.getElementById('error-company-code').classList.remove('hidden'); hasError = true; }
+    if (!date) { document.getElementById('error-date').classList.remove('hidden'); hasError = true; }
+    if (hasError) return;
+    companyName = name; companyCode = code;
+    const chargeCode = document.getElementById('items-charge-code').value.trim();
+    const amount = parseFloat(document.getElementById('items-amount').value);
+    if (!chargeCode) { alert('Please enter a charge code'); document.getElementById('items-charge-code').focus(); return; }
+    if (isNaN(amount) || amount <= 0) { alert('Please enter a valid amount'); document.getElementById('items-amount').focus(); return; }
+    const vat = amount * VAT_RATE, total = amount + vat;
+    items.push({ chargeCode, amount, vat, total });
+    document.getElementById('items-charge-code').value = '';
+    document.getElementById('items-amount').value = '';
+    document.getElementById('items-charge-code').focus();
+    renderItems();
+  }
+  function removeItem(index) { items.splice(index, 1); renderItems(); }
+  function resetItems() { items = []; renderItems(); }
+  function renderItems() {
+    const tbody = document.getElementById('items-tbody'), empty = document.getElementById('items-empty');
+    const table = document.getElementById('items-table'), totals = document.getElementById('totals-bar');
+    const badge = document.getElementById('items-badge');
+    badge.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+    if (items.length === 0) {
+      empty.classList.remove('hidden'); table.classList.add('hidden'); totals.style.display = 'none';
+      tbody.innerHTML = ''; updateSubmitState(); return;
+    }
+    empty.classList.add('hidden'); table.classList.remove('hidden'); totals.style.display = 'flex';
+    let subtotal = 0, totalVat = 0, grandTotal = 0, html = '';
+    items.forEach((item, i) => {
+      subtotal += item.amount; totalVat += item.vat; grandTotal += item.total;
+      html += '<tr class="pr-table-row" data-testid="item-row-' + i + '"><td>' + (i + 1) + '</td>' +
+        '<td data-testid="item-charge-code-' + i + '">' + escapeHtml(item.chargeCode) + '</td>' +
+        '<td data-testid="item-amount-' + i + '">' + item.amount.toFixed(2) + '</td>' +
+        '<td data-testid="item-vat-' + i + '">' + item.vat.toFixed(2) + '</td>' +
+        '<td data-testid="item-total-' + i + '">' + item.total.toFixed(2) + '</td>' +
+        '<td><button class="pr-btn-danger" data-testid="item-delete-' + i + '" onclick="removeItem(' + i + ')" title="Remove">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></td></tr>';
+    });
+    tbody.innerHTML = html;
+    document.getElementById('total-subtotal').textContent = subtotal.toFixed(2);
+    document.getElementById('total-vat').textContent = totalVat.toFixed(2);
+    document.getElementById('total-grand').textContent = grandTotal.toFixed(2);
+    updateSubmitState();
+  }
+  function escapeHtml(text) {
+    const div = document.createElement('div'); div.textContent = text; return div.innerHTML;
+  }
+
+  function updateSubmitState() {
+    const submitBtn = document.getElementById('items-submit-btn');
+    if (submitBtn) submitBtn.disabled = !(items.length > 0 && attachments.length > 0);
+  }
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+  function handleAttachmentUpload(e) {
+    const files = Array.from(e.target.files || []);
+    files.forEach(f => attachments.push({ name: f.name, size: f.size }));
+    e.target.value = '';
+    renderAttachments();
+  }
+  function removeAttachment(index) { attachments.splice(index, 1); renderAttachments(); }
+  function renderAttachments() {
+    const tbody = document.getElementById('attachments-tbody'), empty = document.getElementById('attachments-empty');
+    const table = document.getElementById('attachments-table'), badge = document.getElementById('attachments-badge');
+    badge.textContent = attachments.length + ' file' + (attachments.length !== 1 ? 's' : '');
+    if (attachments.length === 0) {
+      empty.classList.remove('hidden'); table.classList.add('hidden'); tbody.innerHTML = ''; updateSubmitState(); return;
+    }
+    empty.classList.add('hidden'); table.classList.remove('hidden');
+    document.getElementById('error-attachments').classList.add('hidden');
+    let html = '';
+    attachments.forEach((a, i) => {
+      html += '<tr class="pr-table-row" data-testid="attachment-row-' + i + '"><td>' + (i + 1) + '</td>' +
+        '<td data-testid="attachment-name-' + i + '">' + escapeHtml(a.name) + '</td>' +
+        '<td>' + formatFileSize(a.size) + '</td>' +
+        '<td><button class="pr-btn-danger" data-testid="attachment-delete-' + i + '" onclick="removeAttachment(' + i + ')" title="Remove">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></td></tr>';
+    });
+    tbody.innerHTML = html;
+    updateSubmitState();
+  }
+
+  function renderPurchaseOrders() {
+    const tbody = document.getElementById('po-tbody'), empty = document.getElementById('po-empty');
+    const table = document.getElementById('po-table'), badge = document.getElementById('po-badge');
+    const myPRs = [];
+    submittedPRs.forEach((pr, idx) => { if (pr.submittedBy === currentUser) myPRs.push({ pr, idx }); });
+    badge.textContent = myPRs.length + ' PR' + (myPRs.length !== 1 ? 's' : '');
+    if (myPRs.length === 0) {
+      empty.classList.remove('hidden'); table.classList.add('hidden'); tbody.innerHTML = ''; return;
+    }
+    empty.classList.add('hidden'); table.classList.remove('hidden');
+    let html = '';
+    myPRs.forEach(entry => {
+      const pr = entry.pr, idx = entry.idx;
+      const statusClass = pr.status === 'Approved' ? 'pr-badge-approved' : pr.status === 'Rejected' ? 'pr-badge-rejected' : 'pr-badge-pending';
+      let actionsHtml = '';
+      if (pr.status === 'Pending') {
+        actionsHtml += '<button class="pr-btn-secondary pr-po-action-btn" data-testid="po-approve-' + idx + '" onclick="updatePRStatus(' + idx + ',\'Approved\')">Approve</button> ' +
+          '<button class="pr-btn-secondary pr-po-action-btn pr-po-action-reject" data-testid="po-reject-' + idx + '" onclick="updatePRStatus(' + idx + ',\'Rejected\')">Reject</button> ';
+      }
+      actionsHtml += '<button class="pr-btn-danger" style="opacity:1;" data-testid="po-delete-' + idx + '" onclick="deletePR(' + idx + ')" title="Delete">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>';
+      html += '<tr class="pr-table-row" data-testid="po-row-' + idx + '">' +
+        '<td data-testid="po-pr-number-' + idx + '">' + pr.prNumber + '</td>' +
+        '<td>' + escapeHtml(pr.date) + '</td>' +
+        '<td>' + escapeHtml(pr.companyName) + '</td>' +
+        '<td>' + pr.items.length + '</td>' +
+        '<td>' + pr.subtotal.toFixed(2) + '</td>' +
+        '<td>' + pr.grandTotal.toFixed(2) + '</td>' +
+        '<td><span class="pr-badge ' + statusClass + '" data-testid="po-status-' + idx + '">' + pr.status + '</span></td>' +
+        '<td style="white-space:nowrap;">' + actionsHtml + '</td></tr>';
+    });
+    tbody.innerHTML = html;
+  }
+  function updatePRStatus(index, status) {
+    if (!submittedPRs[index]) return;
+    submittedPRs[index].status = status;
+    savePRsToStorage();
+    renderPurchaseOrders();
+  }
+  function deletePR(index) {
+    if (!submittedPRs[index]) return;
+    if (!confirm('Delete PR ' + submittedPRs[index].prNumber + '? This cannot be undone.')) return;
+    submittedPRs.splice(index, 1);
+    savePRsToStorage();
+    renderPurchaseOrders();
+  }
+
+  function renderInvoices() {
+    const tbody = document.getElementById('inv-tbody'), empty = document.getElementById('inv-empty');
+    const table = document.getElementById('inv-table'), badge = document.getElementById('inv-badge');
+    const rows = [];
+    submittedPRs.forEach(pr => {
+      if (pr.submittedBy !== currentUser) return;
+      (pr.attachments || []).forEach(att => {
+        // Support both the new {name, size} format and any legacy plain-string entries
+        const name = typeof att === 'string' ? att : att.name;
+        const size = typeof att === 'string' ? null : att.size;
+        rows.push({ pr: pr, name: name, size: size });
+      });
+    });
+    badge.textContent = rows.length + ' file' + (rows.length !== 1 ? 's' : '');
+    if (rows.length === 0) {
+      empty.classList.remove('hidden'); table.classList.add('hidden'); tbody.innerHTML = ''; return;
+    }
+    empty.classList.add('hidden'); table.classList.remove('hidden');
+    let html = '';
+    rows.forEach((row, i) => {
+      const pr = row.pr;
+      const statusClass = pr.status === 'Approved' ? 'pr-badge-approved' : pr.status === 'Rejected' ? 'pr-badge-rejected' : 'pr-badge-pending';
+      html += '<tr class="pr-table-row" data-testid="inv-row-' + i + '">' +
+        '<td>' + pr.prNumber + '</td>' +
+        '<td>' + escapeHtml(pr.companyName) + '</td>' +
+        '<td>' + escapeHtml(pr.date) + '</td>' +
+        '<td data-testid="inv-filename-' + i + '">' + escapeHtml(row.name) + '</td>' +
+        '<td>' + (row.size != null ? formatFileSize(row.size) : '&mdash;') + '</td>' +
+        '<td><span class="pr-badge ' + statusClass + '">' + pr.status + '</span></td></tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  function submitPR() {
+    if (items.length === 0) { alert('Please add at least one item'); return; }
+    if (attachments.length === 0) {
+      document.getElementById('error-attachments').classList.remove('hidden');
+      alert('Please upload at least one attachment before submitting the PR');
+      return;
+    }
+    prNumber = 'PR-' + Date.now().toString().slice(-8);
+    const dateStr = document.getElementById('proc-date').value;
+    let subtotal = 0, totalVat = 0, grandTotal = 0;
+    items.forEach(it => { subtotal += it.amount; totalVat += it.vat; grandTotal += it.total; });
+    let previewHtml = '<div class="pr-preview-header"><div class="pr-preview-title">PURCHASE REQUISITION</div><div style="font-size:12px;color:#666;">Oracle Finance Cloud</div></div>' +
+      '<div class="pr-preview-meta"><div><strong>PR Number:</strong> ' + prNumber + '<br><strong>Date:</strong> ' + dateStr + '</div>' +
+      '<div style="text-align:right;"><strong>Company:</strong> ' + escapeHtml(companyName) + '<br><strong>Code:</strong> ' + escapeHtml(companyCode) + '</div></div>' +
+      '<table class="pr-preview-table"><thead><tr><th>#</th><th>Charge Code</th><th>Amount (Excl. VAT)</th><th>VAT (15%)</th><th>Total</th></tr></thead><tbody>';
+    items.forEach((item, i) => {
+      previewHtml += '<tr><td>' + (i+1) + '</td><td>' + escapeHtml(item.chargeCode) + '</td><td>' + item.amount.toFixed(2) + '</td><td>' + item.vat.toFixed(2) + '</td><td>' + item.total.toFixed(2) + '</td></tr>';
+    });
+    previewHtml += '</tbody></table>' +
+      '<div class="pr-preview-total">Subtotal (Excl. VAT): ' + subtotal.toFixed(2) + '<br>VAT (15%): ' + totalVat.toFixed(2) + '<br><strong>Grand Total: ' + grandTotal.toFixed(2) + '</strong></div>' +
+      '<div style="margin-top:8px;font-size:12px;color:#444;">Attachments: ' + attachments.map(a => escapeHtml(a.name)).join(', ') + '</div>' +
+      '<div style="margin-top:20px;font-size:11px;color:#666;text-align:center;">Generated by Oracle Finance Cloud | User: ' + (currentUserDisplayName || currentUser || 'academy_user') + '</div>';
+    document.getElementById('pr-preview-content').innerHTML = previewHtml;
+    document.getElementById('popup-pr-number').textContent = ' \u2014 ' + prNumber;
+
+    submittedPRs.push({
+      prNumber: prNumber,
+      date: dateStr,
+      companyName: companyName,
+      companyCode: companyCode,
+      items: items.slice(),
+      subtotal: subtotal,
+      vat: totalVat,
+      grandTotal: grandTotal,
+      attachments: attachments.map(a => ({ name: a.name, size: a.size })),
+      submittedBy: currentUser,
+      status: 'Pending'
+    });
+    savePRsToStorage();
+
+    document.getElementById('popup-overlay').classList.add('active');
+
+    // Reset the form for the next PR
+    document.getElementById('proc-company-name').value = '';
+    document.getElementById('proc-company-code').value = '';
+    document.getElementById('proc-date').value = '';
+    companyName = ''; companyCode = ''; selectedDate = null;
+    resetItems();
+    attachments = [];
+    renderAttachments();
+  }
+  function closePopup() { document.getElementById('popup-overlay').classList.remove('active'); }
+
+  function downloadPDF() {
+    const content = document.getElementById('pr-preview-content').innerHTML;
+    const win = window.open('', '_blank');
+    win.document.write('<html><head><title>Purchase Requisition ' + prNumber + '</title>' +
+      '<style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1a1a2e}' +
+      '.pr-preview-header{text-align:center;border-bottom:2px solid #1a1a2e;padding-bottom:12px;margin-bottom:16px}' +
+      '.pr-preview-title{font-size:20px;font-weight:bold;color:#1a1a2e}' +
+      '.pr-preview-meta{display:flex;justify-content:space-between;margin:12px 0;font-size:13px;flex-wrap:wrap;gap:8px}' +
+      '.pr-preview-table{width:100%;border-collapse:collapse;margin:12px 0}' +
+      '.pr-preview-table th,.pr-preview-table td{border:1px solid #ccc;padding:8px;font-size:13px}' +
+      '.pr-preview-table th{background:#f0f0f0;font-weight:600}' +
+      '.pr-preview-total{text-align:right;font-weight:bold;margin-top:12px}' +
+      '@media print{@page{margin:20mm}body{padding:0}}</style></head><body>' + content +
+      '</body></html>');
+    win.document.close();
+    setTimeout(function() { win.print(); }, 300);
+  }
+
+  renderAttachments();
+</script>
+</body>
+</html>
