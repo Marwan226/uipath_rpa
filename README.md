@@ -1,7 +1,7 @@
 # Travel Request to Purchase Requisition Automation
 
 <p align="center">
-  <img src="assets/travel-automation-architecture.png" alt="Travel Automation architecture from supplier email to purchase requisition" width="1100" />
+  <img src="travel-automation-architecture.png" alt="Travel Automation architecture from supplier email to purchase requisition" width="1100" />
 </p>
 
 <p align="center">
