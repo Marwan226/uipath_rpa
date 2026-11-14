@@ -1,6 +1,0 @@
-{
-  "Name": "TravelAutomation",
-  "ProjectType": "Process",
-  "Description": "Robotic Enterprise Framework",
-  "MainFile": "DispatcherMain.xaml"
-}
